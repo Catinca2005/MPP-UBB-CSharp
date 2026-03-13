@@ -1,0 +1,16 @@
+# Visual Studio files
+.vs/
+[Bb]in/
+[Oo]bj/
+*.user
+*.suo
+*.sln.docstates
+
+# SQL Server / SQLite caches
+*.sqlite
+*.db-shm
+*.db-wal
+
+# Rider / IntelliJ (just in case)
+.idea/
+*.iml

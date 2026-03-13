@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Festival.Domain/Festival.Domain.csproj" />
+  <Project Path="Festival.Repository/Festival.Repository.csproj" Id="a8d21156-a467-48b1-be99-0fcaf405c960" />
+</Solution>
