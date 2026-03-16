@@ -1,12 +1,15 @@
 ﻿namespace Festival.Domain
 {
-    public class Angajat : IIdentifiable<long>
+    /// <summary>
+    /// Represents a staff member with system access credentials.
+    /// </summary>
+    public class Employee : IIdentifiable<long>
     {
         public long Id { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
 
-        public Angajat(string username, string password)
+        public Employee(string username, string password)
         {
             Username = username;
             Password = password;

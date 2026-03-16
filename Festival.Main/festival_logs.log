@@ -1,0 +1,4 @@
+2026-03-15 00:08:38,612 [2] INFO  Festival.Repository.ArtistDbRepository - Entering Add with artist: Arctic Monkeys 00:08:38
+2026-03-15 00:08:38,628 [2] INFO  Festival.Repository.ArtistDbRepository - Exiting Add - rows affected: 1
+2026-03-15 00:08:38,629 [2] INFO  Festival.Repository.ArtistDbRepository - Entering FindAll artists
+2026-03-15 00:08:38,630 [2] INFO  Festival.Repository.ArtistDbRepository - Exiting FindAll - found 4 artists
