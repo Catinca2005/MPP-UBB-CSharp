@@ -1,51 +1,61 @@
 ﻿using System;
+using System.Net.Mime;
+using System.Windows.Forms;
 using Festival.Repository;
 using Festival.Domain;
+using Festival.Service;
+using Festival.Controller;
 using log4net.Config;
 
 namespace Festival.Main
 {
-    public class Program
+    public static class Program
     {
         [STAThread]
-        static void Main(string[] args)
+        static void Main()
         {
+            // 1. Logging & Console
             XmlConfigurator.Configure();
-
             Console.WriteLine("========================================");
             Console.WriteLine("   FESTIVAL MANAGEMENT SYSTEM STARTING  ");
             Console.WriteLine("========================================");
 
+            //UI settings
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+
             try
             {
+               //connexion test
                 var connection = DbUtils.GetConnection();
                 Console.WriteLine($"[SUCCESS] Database connected. State: {connection.State}");
+                // -------------------------------
 
-                Console.WriteLine("\n--- Testing Artist Persistence ---");
+                //Injection
+                IEmployeeRepository employeeRepo = new EmployeeDbRepository();
                 IArtistRepository artistRepo = new ArtistDbRepository();
+                IShowRepository showRepo = new ShowDbRepository();
+                ITicketRepository ticketRepo = new TicketDbRepository();
 
-                string testArtistName = "Arctic Monkeys " + DateTime.Now.ToString("HH:mm:ss");
-                Artist newArtist = new Artist(testArtistName);
+                FestivalService service = new FestivalService(
+                    employeeRepo, artistRepo, showRepo, ticketRepo);
 
-                artistRepo.Add(newArtist);
-                Console.WriteLine($"[INFO] Successfully added: {testArtistName}");
+                LoginController loginController = new LoginController(service);
+                MainController mainController = new MainController(service);
 
-                Console.WriteLine("\n--- Current Artists in Database ---");
-                foreach (var artist in artistRepo.FindAll())
-                {
-                    Console.WriteLine($"ID: {artist.Id} | Name: {artist.Name}");
-                }
+                Console.WriteLine("[INFO] DI Container initialized. Opening Login Form...");
 
-                Console.WriteLine("\nReady for operations.");
+                
+                Application.Run(new LoginForm(loginController, mainController));
+                
             }
             catch (Exception ex)
             {
+              
                 Console.WriteLine($"\n[FATAL ERROR] {ex.Message}");
+                MessageBox.Show($"Startup failed: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 log4net.LogManager.GetLogger("Main").Fatal("Application failed to start", ex);
             }
-
-            Console.WriteLine("\nPress any key to close this window and view logs...");
-            Console.ReadKey();
         }
     }
 }

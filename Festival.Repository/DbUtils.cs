@@ -12,7 +12,7 @@ namespace Festival.Repository
         {
             if (_instance == null || _instance.State == ConnectionState.Closed)
             {
-                string connString = ConfigurationManager.ConnectionStrings["festivalDB"].ConnectionString;
+                string connString = ConfigurationManager.ConnectionStrings["festival.db"].ConnectionString;
                 _instance = new SQLiteConnection(connString);
                 _instance.Open();
             }
