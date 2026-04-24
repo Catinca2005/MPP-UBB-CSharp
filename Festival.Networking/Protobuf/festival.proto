@@ -1,0 +1,69 @@
+// We use version 3 of Protocol Buffers
+syntax = "proto3";
+
+// This tells the compiler to generate C# classes in this specific namespace
+option csharp_namespace = "Festival.Networking.Protobuf";
+
+package festival;
+
+// Defining the types of requests the Client can send to the Server
+enum RequestType {
+  UNKNOWN_REQUEST = 0;
+  LOGIN = 1;
+  LOGOUT = 2;
+  GET_ALL_SHOWS = 3;
+  GET_SHOWS_BY_DATE = 4;
+  BUY_TICKET = 5;
+}
+
+// Defining the types of responses the Server can send back
+enum ResponseType {
+  UNKNOWN_RESPONSE = 0;
+  OK = 1;
+  ERROR = 2;
+  UPDATE = 3; // Used for live observer notifications
+  GET_ALL_SHOWS_RESPONSE = 4;
+  GET_SHOWS_BY_DATE_RESPONSE = 5;
+}
+
+// Data Transfer Objects (DTOs) for our domain entities
+message EmployeeProto {
+  string username = 1;
+  string password = 2;
+}
+
+message ShowProto {
+  int64 id = 1;
+  int64 artist_id = 2;
+  string date = 3; // ISO 8601 format: YYYY-MM-DD
+  string time = 4;
+  string location = 5;
+  int32 available_seats = 6;
+  int32 sold_seats = 7;
+}
+
+message TicketProto {
+  int64 id = 1;
+  int64 show_id = 2;
+  string buyer_name = 3;
+  int32 number_of_seats = 4;
+}
+
+// The unified Request wrapper
+message Request {
+  RequestType type = 1;
+  // 'oneof' ensures only one of these fields is sent at a time to save bandwidth
+  oneof payload {
+    EmployeeProto employee = 2;
+    string date = 3;
+    TicketProto ticket = 4;
+  }
+}
+
+// The unified Response wrapper
+message Response {
+  ResponseType type = 1;
+  string error = 2;
+  repeated ShowProto shows = 3; // 'repeated' acts like a List/IEnumerable
+  ShowProto show = 4;           // Used for live updates regarding a single show
+}

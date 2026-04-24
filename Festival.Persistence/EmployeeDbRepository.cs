@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using Festival.Domain;
-using Festival.Network.Utils;
+using Festival.Model;
 using log4net;
 
-namespace Festival.Repository
+namespace Festival.Persistence
 {
     /// <summary>
     /// Data Access Object for Employee entities using SQLite and ADO.NET.

@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net10.0-windows</TargetFramework>
+        <Nullable>enable</Nullable>
+        <UseWindowsForms>true</UseWindowsForms>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Festival.Model\Festival.Model.csproj" />
+      <ProjectReference Include="..\Festival.Networking\Festival.Networking.csproj" />
+      <ProjectReference Include="..\Festival.Services\Festival.Services.csproj" />
+    </ItemGroup>
+
+</Project>

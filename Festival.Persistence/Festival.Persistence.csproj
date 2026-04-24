@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Festival.Model\Festival.Model.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="log4net" Version="3.3.1" />
+      <PackageReference Include="System.Configuration.ConfigurationManager" Version="11.0.0-preview.3.26207.106" />
+      <PackageReference Include="System.Data.SQLite" Version="2.0.3" />
+    </ItemGroup>
+
+</Project>

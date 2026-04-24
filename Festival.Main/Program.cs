@@ -5,6 +5,7 @@ using Festival.Repository;
 using Festival.Domain;
 using Festival.Service;
 using Festival.Controller;
+using Festival.Network.Utils;
 using log4net.Config;
 
 namespace Festival.Main
@@ -14,6 +15,16 @@ namespace Festival.Main
         [STAThread]
         static void Main()
         {
+            
+            // 1. Aflăm unde este baza de date pe bune
+            string dbPath = Path.GetFullPath("festival.db");
+            Console.WriteLine("PROGRAMUL CAUTĂ BAZA AICI: " + dbPath);
+
+            // 2. Verificăm dacă fișierul chiar există acolo
+            if (!File.Exists(dbPath)) {
+                Console.WriteLine("EROARE: Fișierul bazei de date NU există la calea de mai sus!");
+            }
+            
             // 1. Logging & Console
             XmlConfigurator.Configure();
             Console.WriteLine("========================================");
@@ -42,6 +53,18 @@ namespace Festival.Main
 
                 LoginController loginController = new LoginController(service);
                 MainController mainController = new MainController(service);
+                
+                Console.WriteLine("--- Password Encoding Test ---");
+        
+                string rawPassword = "admin123";
+                string securePassword = SecurityUtils.Encode(rawPassword);
+        
+                Console.WriteLine($"Raw text: {rawPassword}");
+                Console.WriteLine($"Encoded (to be saved in DB): {securePassword}");
+        
+                // Test de verificare
+                string backToNormal = SecurityUtils.Decode(securePassword);
+                Console.WriteLine($"Decoded back: {backToNormal}");
 
                 Console.WriteLine("[INFO] DI Container initialized. Opening Login Form...");
 
