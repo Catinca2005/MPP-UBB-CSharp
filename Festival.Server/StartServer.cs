@@ -2,9 +2,9 @@ using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using Festival.Persistence;
 using Festival.Services;
 using Festival.Networking;
+using Festival.Persistence;
 
 namespace Festival.Server
 {
@@ -23,13 +23,21 @@ namespace Festival.Server
             try
             {
                 // 1. Initialize Persistence (Database Repositories)
-                IEmployeeRepository employeeRepo = new EmployeeDbRepository();
-                IArtistRepository artistRepo = new ArtistDbRepository();
-                IShowRepository showRepo = new ShowDbRepository();
-                ITicketRepository ticketRepo = new TicketDbRepository();
+                
+                // --- NEW ORM PERSISTENCE (Entity Framework Core) ---
+                // --- ORM PERSISTENCE (Entity Framework Core) ---
+                IEmployeeRepository repoEmployee = new EmployeeOrmRepository();
+                IShowRepository repoShow = new ShowOrmRepository();
+
+                // --- OLD ADO.NET PERSISTENCE ---
+                // We keep these for the entities that are not mapped via ORM yet
+                IArtistRepository repoArtist = new ArtistDbRepository();
+                ITicketRepository repoTicket = new TicketDbRepository();
 
                 // 2. Initialize the core Business Logic
-                IFestivalServices serviceImpl = new FestivalServicesImpl(employeeRepo, artistRepo, showRepo, ticketRepo);
+                // Passed strictly in the correct order: Employee, Show, Artist, Ticket
+                IFestivalServices serviceImpl = new FestivalServicesImpl(repoEmployee,repoArtist,repoShow, repoTicket);
+               
 
                 // 3. Set up the Network Listener
                 int port = 55555;

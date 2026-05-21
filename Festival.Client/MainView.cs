@@ -17,6 +17,7 @@ namespace Festival.Client
         {
             InitializeComponent();
             _controller = controller;
+            _controller.OnTicketSold += OnTicketSoldHandler;
             LoadAllShows();
         }
 
@@ -68,8 +69,6 @@ namespace Festival.Client
                 
                 MessageBox.Show("Purchase successful!");
                 
-                // Refresh data after purchase
-                LoadAllShows();
                 txtBuyerName.Clear();
                 txtQuantity.Clear();
             }
@@ -100,6 +99,24 @@ namespace Festival.Client
         private void btnLogout_Click(object sender, EventArgs e)
         {
             this.Close(); // Return to Login or close app
+        }
+        
+        /// <summary>
+        /// Event handler triggered when the server notifies about a ticket sale.
+        /// Ensures UI updates occur on the main thread safely to prevent cross-thread exceptions.
+        /// </summary>
+        private void OnTicketSoldHandler(object sender, Show updatedShow)
+        {
+            // Check if the current thread is a background network thread
+            if (this.InvokeRequired)
+            {
+                // Send the execution back to the Main UI Thread
+                this.BeginInvoke(new Action(() => OnTicketSoldHandler(sender, updatedShow)));
+                return;
+            }
+
+            // Once on the Main Thread, refresh the table with the latest data
+            LoadAllShows();
         }
     }
 }

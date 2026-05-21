@@ -35,7 +35,7 @@ message EmployeeProto {
 message ShowProto {
   int64 id = 1;
   int64 artist_id = 2;
-  string date = 3; // ISO 8601 format: YYYY-MM-DD
+  string date = 3; 
   string time = 4;
   string location = 5;
   int32 available_seats = 6;

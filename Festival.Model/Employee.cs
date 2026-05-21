@@ -9,6 +9,9 @@
         public string Username { get; set; }
         public string Password { get; set; }
 
+        // Required by Entity Framework Core for object materialization
+        protected Employee() { }
+        
         public Employee(string username, string password)
         {
             Username = username;

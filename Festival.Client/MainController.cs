@@ -76,6 +76,7 @@ namespace Festival.Controller
         /// </summary>
         public void TicketSold(Show updatedShow)
         {
+            
             OnTicketSold?.Invoke(this, updatedShow);
         }
     }

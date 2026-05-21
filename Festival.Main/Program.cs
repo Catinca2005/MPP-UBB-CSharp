@@ -16,11 +16,9 @@ namespace Festival.Main
         static void Main()
         {
             
-            // 1. Aflăm unde este baza de date pe bune
             string dbPath = Path.GetFullPath("festival.db");
             Console.WriteLine("PROGRAMUL CAUTĂ BAZA AICI: " + dbPath);
-
-            // 2. Verificăm dacă fișierul chiar există acolo
+            
             if (!File.Exists(dbPath)) {
                 Console.WriteLine("EROARE: Fișierul bazei de date NU există la calea de mai sus!");
             }

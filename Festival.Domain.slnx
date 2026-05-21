@@ -7,6 +7,8 @@
   <Project Path="Festival.Networking/Festival.Networking.csproj" />
   <Project Path="Festival.Persistence/Festival.Persistence.csproj" />
   <Project Path="Festival.Repository/Festival.Repository.csproj" Id="a8d21156-a467-48b1-be99-0fcaf405c960" />
+  <Project Path="Festival.RestClient/Festival.RestClient.csproj" />
+  <Project Path="Festival.RestServices/Festival.RestServices.csproj" />
   <Project Path="Festival.Server/Festival.Server.csproj" />
   <Project Path="Festival.Service/Festival.Service.csproj" />
   <Project Path="Festival.Services/Festival.Services.csproj" />

@@ -11,6 +11,7 @@
       <ProjectReference Include="..\Festival.Model\Festival.Model.csproj" />
       <ProjectReference Include="..\Festival.Networking\Festival.Networking.csproj" />
       <ProjectReference Include="..\Festival.Persistence\Festival.Persistence.csproj" />
+      <ProjectReference Include="..\Festival.Repository\Festival.Repository.csproj" />
       <ProjectReference Include="..\Festival.Services\Festival.Services.csproj" />
     </ItemGroup>
 
