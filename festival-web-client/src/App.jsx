@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import ShowTable from './components/ShowTable';
 import ControlPanel from './components/ControlPanel';
 import { showService } from './services/showService';
@@ -6,16 +7,52 @@ import { showService } from './services/showService';
 /**
  * Main application component.
  * Serves as the root container and state manager for the Festival Management UI.
+ * Implements SignalR for real-time (Observer) updates across all connected clients.
  */
 function App() {
     // Application State
     const [shows, setShows] = useState([]);
     const [selectedShowId, setSelectedShowId] = useState(null);
 
-    // Lifecycle hook: Fetch data when the component mounts (loads)
+    // Lifecycle hook: Initialize data and WebSocket connection on mount
     useEffect(() => {
         loadAllShows();
-    }, []);
+        
+        // --- SIGNALR WEBSOCKET SETUP ---
+        
+        // 1. Build the connection to the C# Hub
+        const connection = new HubConnectionBuilder()
+            .withUrl("http://localhost:5050/showHub") // Must match the endpoint in C# Program.cs
+            .configureLogging(LogLevel.Information)
+            .withAutomaticReconnect() // Auto-reconnect if the server drops
+            .build();
+
+        // 2. Define what happens when the server broadcasts a message
+        // "ReceiveShowUpdate" matches the exact string used in ShowController.cs
+        connection.on("ReceiveShowUpdate", (actionType) => {
+            console.log(`[WebSocket] Server notification received: Item ${actionType}. Refreshing table...`);
+            
+            // Automatically fetch the fresh data from the database
+            loadAllShows();
+        });
+
+        // 3. Start the connection
+        const startConnection = async () => {
+            try {
+                await connection.start();
+                console.log("[WebSocket] Successfully connected to SignalR Hub.");
+            } catch (error) {
+                console.error("[WebSocket] Connection failed: ", error);
+            }
+        };
+
+        startConnection();
+
+        // 4. Cleanup function: Close connection when the component unmounts (best practice)
+        return () => {
+            connection.stop();
+        };
+    }, []); // Empty dependency array ensures this runs only once
 
     /**
      * Retrieves all shows from the backend and updates the UI.
@@ -26,7 +63,8 @@ function App() {
             setShows(data);
         } catch (error) {
             console.error("Failed to load shows:", error);
-            alert("Error loading shows. Make sure the C# server is running.");
+            // alert("Error loading shows. Make sure the C# server is running."); 
+            // Commented out alert to prevent spamming if the server restarts
         }
     };
 
@@ -51,8 +89,6 @@ function App() {
 
     /**
      * Processes a ticket purchase for the currently selected show.
-     * Note: In a real REST API, this might be a custom endpoint (e.g., POST /buy).
-     * Here we simulate it by updating the available seats via PUT.
      */
     const handleBuyTicket = async (buyerName, quantity) => {
         const targetShow = shows.find(s => s.id === selectedShowId);
@@ -62,7 +98,6 @@ function App() {
             return;
         }
 
-        // Prepare the updated object
         const updatedShow = {
             ...targetShow,
             availableSeats: targetShow.availableSeats - quantity,
@@ -70,9 +105,12 @@ function App() {
         };
 
         try {
+            // Note: We don't call loadAllShows() here manually anymore!
+            // The PUT request updates the DB, the C# Controller shouts to the Hub, 
+            // and the Hub tells ALL clients (including this one) to trigger loadAllShows().
             await showService.updateShow(targetShow.id, updatedShow);
             alert(`Purchase successful for ${buyerName}!`);
-            loadAllShows(); // Refresh the table to see the new seat count
+            setSelectedShowId(null); // Clear selection after buy
         } catch (error) {
             console.error("Purchase failed:", error);
             alert("Failed to complete purchase.");
